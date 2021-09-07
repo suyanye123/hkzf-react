@@ -1,3 +1,4 @@
+//
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
 import News from "../News";
@@ -33,6 +34,15 @@ export default class Home extends Component {
     // 默认选择菜单项
     selectedTab: this.props.location.pathname,
   };
+  componentDidUpdate(prevProps) {
+    //在路由发生变化时，高亮菜单栏
+    // console.log(prevProps, this.props);
+    if (prevProps.location.pathname !== this.props.location.pathname) {
+      this.setState({
+        selectedTab: this.props.location.pathname,
+      });
+    }
+  }
   // 渲染tabbaritem
   renderTabBarItem() {
     return tabItems.map((item) => (

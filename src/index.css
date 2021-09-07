@@ -8,5 +8,10 @@ body {
 
 * {
   box-sizing: border-box;
+  /* 去掉轮播图在chrome浏览器的警告 */
   touch-action: pan-y;
+}
+
+h2 {
+  margin: 0;
 }
