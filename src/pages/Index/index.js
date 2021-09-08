@@ -1,13 +1,13 @@
 //tapbar的首页
 import React, { Component } from "react";
 import axios from "axios";
-import { Carousel, Flex } from "antd-mobile";
+import { Carousel, Flex, Grid } from "antd-mobile";
 //导入图片
 import Nav1 from "../../assets/img/nav-1.png";
 import Nav2 from "../../assets/img/nav-2.png";
 import Nav3 from "../../assets/img/nav-3.png";
 import Nav4 from "../../assets/img/nav-4.png";
-import "./index.css";
+import "./index.scss";
 const navs = [
   { id: 1, img: Nav1, title: "整租", path: "/home/list" },
   { id: 2, img: Nav2, title: "合租", path: "/home/hezu" },
@@ -19,11 +19,13 @@ export default class Index extends Component {
     // 图片名称
     swipers: [],
     loaded: false,
+
+    //租房推荐小组
+    groups: [],
   };
   async getSwipers() {
     const res = await axios.get("http://127.0.0.1:8080/home/swiper");
-    console.log(res);
-
+    // console.log(res);
     this.setState(() => {
       return {
         swipers: res.data.body,
@@ -31,9 +33,21 @@ export default class Index extends Component {
       };
     });
   }
+  async getGroups() {
+    const res = await axios.get("http://127.0.0.1:8080/home/groups", {
+      params: {
+        area: "AREA%7C88cff55c-aaa4-e2e0",
+      },
+    });
+    this.setState({
+      groups: res.data.body,
+    });
+    console.log(this.state.groups);
+  }
   componentDidMount() {
     // 在挂载前请求轮播图数据
     this.getSwipers();
+    this.getGroups();
   }
   // 渲染轮播图
   renderSwipers() {
@@ -81,6 +95,29 @@ export default class Index extends Component {
         )}
         {/* 导航菜单 */}
         <Flex className="nav">{this.renderNavs()}</Flex>
+        {/* 租房小组 */}
+        <div className="group">
+          <h3 className="group-title">
+            租房小组
+            <span className="more">更多</span>
+          </h3>
+          {/* 宫格组件 */}
+          <Grid
+            data={this.state.groups}
+            columnNum={2}
+            hasLine={false}
+            square={false}
+            renderItem={() => (
+              <Flex className="group-item" justify="around">
+                <div className="desc">
+                  <p className="title">家住回龙观</p>
+                  <span className="info">归属的感觉</span>
+                </div>
+                <img src="" alt="" />
+              </Flex>
+            )}
+          />
+        </div>
       </div>
     );
   }
